@@ -46,7 +46,7 @@ class WSIVMissionsNextRequest {
         $xml = $this->getXML();
         $this->setAttributesFromXML($xml);
     }
-    
+
     public function getReturn() {
         return $this->return;
     }
