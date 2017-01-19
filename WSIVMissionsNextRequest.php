@@ -18,7 +18,7 @@ class WSIVMissionsNextRequest {
     private $expire;
 
     public function __construct($idLine, $stationName, $directionSens) {
-        $this->expire   = time() - 5;
+        $this->expire   = time() - 30;
         $this->location = "http://opendata-tr.ratp.fr/wsiv/services/Wsiv?wsdl=";
         $this->uri      = "http://opendata-tr.ratp.fr/wsiv/services";
         $this->action   = "urn:getMissionsNext";
@@ -55,12 +55,8 @@ class WSIVMissionsNextRequest {
         return $this->direction;
     }
 
-    public function getDate() {
-        return strftime("%d %B %Y", strtotime($this->date));
-    }
-
     public function getTime() {
-        return strftime("%Hh%M", strtotime($this->date));
+        return strtotime($this->date);
     }
 
     public function getLine() {

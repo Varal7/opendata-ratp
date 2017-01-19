@@ -9,6 +9,7 @@ $request = new WSIVMissionsNextRequest("RB", "Lozere", "A");
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Horaires RATP">
+        <meta http-equiv="refresh" content="5" >
         <meta name="author" content="">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <title>Horaires RATP</title>
@@ -25,8 +26,12 @@ $request = new WSIVMissionsNextRequest("RB", "Lozere", "A");
                   <strong>Direction: </strong><span><?php echo $request->getDirection() ?></span>
                 </div>
                 <div class="date_time pull-right">
-                  <span class="date"><?php echo $request->getDate(); ?></span>
-                  <span class="time"><?php echo $request->getTime(); ?></span>
+                  <strong>API time:</strong>
+                  <span class="datetime"><?php
+                  echo strftime("%d %B %Y, %H:%M:%S", $request->getTime());?></span><br />
+                  <strong>Server time:</strong>
+                  <span class="datetime"><?php
+                  echo strftime("%d %B %Y, %H:%M:%S", time());?></span><br />
                 </div>
 
             <div class="perturbations">
