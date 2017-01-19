@@ -19,6 +19,7 @@ class WSIVMissionsNextRequest {
 
     public function __construct($idLine, $stationName, $directionSens) {
         $this->expire   = time() - 30;
+        $this->maxByDay = 1000*1000*100;
         $this->location = "http://opendata-tr.ratp.fr/wsiv/services/Wsiv?wsdl=";
         $this->uri      = "http://opendata-tr.ratp.fr/wsiv/services";
         $this->action   = "urn:getMissionsNext";
@@ -81,6 +82,9 @@ class WSIVMissionsNextRequest {
             $xml       = simplexml_load_string($clean_xml);
             return $xml;
         }
+        if (!$this->incrementAndCheckIsAllowed()) {
+            echo "I've had too much today, sorry."; die;
+        }
         $xmlstring = $this->client->__doRequest($this->request, $this->location, $this->action, $this->version);
         $clean_xml = str_ireplace(['SOAPENV:', 'NS1:', 'NS2:'], '', $xmlstring);
         file_put_contents($this->requestFilename, $clean_xml);
@@ -96,5 +100,16 @@ class WSIVMissionsNextRequest {
         $this->line          = $this->return->argumentLine->reseau->name . ' ' . $this->return->argumentLine->code;
         $this->perturbations = $this->return->perturbations;
         $this->missions      = $this->return->missions;
+    }
+
+    private function incrementAndCheckIsAllowed() {
+        $filename = "logs/" . date("Ymd");
+        if (!file_exists($filename)) {
+            file_put_contents($filename, 1);
+            return true;
+        }
+        $count = file_get_contents($filename);
+        file_put_contents($filename, 1 + (int)$count);
+        return ($count <= $this->maxByDay);
     }
 }
