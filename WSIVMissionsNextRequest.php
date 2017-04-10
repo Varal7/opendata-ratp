@@ -17,15 +17,30 @@ class WSIVMissionsNextRequest {
     private $missions;
     private $expire;
 
-    public function __construct($idLine, $stationName, $directionSens) {
+    public function __construct($idLine, $stationName, $directionSens, $proxyHost = null, $proxyPort = null) {
         $this->expire   = time() - 30;
         $this->maxByDay = 1000*1000*100;
         $this->location = "http://opendata-tr.ratp.fr/wsiv/services/Wsiv?wsdl=";
         $this->uri      = "http://opendata-tr.ratp.fr/wsiv/services";
         $this->action   = "urn:getMissionsNext";
         $this->version  = 0;
-        $this->client   = new SoapClient(null, array('location' => $this->location,
-                                            'uri'       => ""));
+        $this->proxyHost = $proxyHost;
+        $this->proxyPort = $proxyPort;
+
+        if ($this->proxyHost) {
+            $this->client   = new SoapClient(null, array(
+                'location'       => $this->location,
+                'uri'            => "",
+                'proxy_host'     => $this->proxyHost,
+                'proxy_port'     => $this->proxyPort
+            ));
+        } else {
+            $this->client   = new SoapClient(null, array(
+                'location'       => $this->location,
+                'uri'            => ""
+            ));
+        }
+
         $this->requestFilename = 'cache/' . $idLine . '-' . $stationName . '-' . $directionSens;
         $this->request = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://wsiv.ratp.fr/xsd" xmlns:wsiv="http://wsiv.ratp.fr">
             <soapenv:Header/>
